@@ -1,0 +1,43 @@
+{
+  "name": "sessionhub",
+  "version": "1.0.0",
+  "description": "A microservice for managing astrophotography sessions with MongoDB",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ahmad-danaf/SessionHub.git"
+  },
+  "keywords": [
+    "sessionhub",
+    "astrophotography",
+    "session-management",
+    "microservice"
+  ],
+  "author": "Ahmad Danaf <ahmad.danf@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ahmad-danaf/SessionHub/issues"
+  },
+  "homepage": "https://github.com/Ahmad-danaf/SessionHub#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "chai": "^5.1.2",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.17.0",
+    "mocha": "^11.0.1",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.4.2"
+  }
+}
