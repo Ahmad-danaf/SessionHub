@@ -1,15 +1,15 @@
 import mongoose from 'mongoose';
-const sessionSchema = mongoose.Schema(
-  {
-    userId: { type: String, required: true },
-    sessionType: { type: String, enum: ['log', 'plan'], required: true },
-    date: { type: Date, required: true },
-    location: { type: String },
-    celestialObjects: [String],
-    notes: { type: String },
-    status: { type: String, enum: ['completed', 'upcoming'], required: true },
-  },
-  { timestamps: true }
-);
 
-export default mongoose.model('Session', sessionSchema);
+const sessionSchema = new mongoose.Schema({
+  userId: { type: String, required: true }, // From SpaceCodey
+  sessionType: { type: String, enum: ['log', 'plan'], required: true },
+  date: { type: Date, required: true },
+  location: { type: String, required: true },
+  celestialObjects: { type: [String], default: [] },
+  notes: { type: String, default: '' },
+  status: { type: String, enum: ['completed', 'upcoming'], required: true },
+});
+
+const Session = mongoose.model('Session', sessionSchema, 'sessions'); // Model, Schema, Collection
+
+export default Session;

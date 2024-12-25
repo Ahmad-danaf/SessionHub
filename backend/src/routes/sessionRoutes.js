@@ -1,16 +1,15 @@
 import express from 'express';
 import { getSessions, addSession, updateSession, deleteSession } from '../controllers/sessionController.js';
-import protect from '../middlewares/authMiddleware.js';
+import verifyDjangoSession from '../middlewares/verifyDjangoSession.js';
 
 const router = express.Router();
 
-// Routes
 router.route('/')
-  .get(protect, getSessions)  // Get all sessions for a user
-  .post(protect, addSession); // Add a new session
+  .get(verifyDjangoSession, getSessions)  // Fetch user sessions
+  .post(verifyDjangoSession, addSession); // Add a new session
 
 router.route('/:id')
-  .put(protect, updateSession)   // Update an existing session
-  .delete(protect, deleteSession); // Delete a session by ID
+  .put(verifyDjangoSession, updateSession)    // Update a session
+  .delete(verifyDjangoSession, deleteSession); // Delete a session
 
 export default router;

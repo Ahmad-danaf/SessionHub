@@ -4,17 +4,19 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import healthRoutes from './routes/healthRoutes.js';
 import sessionRoutes from './routes/sessionRoutes.js';
+import cors from 'cors';
 
 dotenv.config();
 const app = express();
 
 // Middleware
+app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(morgan('tiny'));
 app.use('/api/sessions', sessionRoutes);
 app.use('/api', healthRoutes);
 
-// Connect to the database
-//connectDB();
+
 
 export default app;
