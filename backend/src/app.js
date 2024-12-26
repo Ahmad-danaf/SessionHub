@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import healthRoutes from './routes/healthRoutes.js';
 import sessionRoutes from './routes/sessionRoutes.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser'; 
 
 dotenv.config();
 const app = express();
