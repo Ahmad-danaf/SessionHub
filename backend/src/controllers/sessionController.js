@@ -1,6 +1,6 @@
 import Session from '../models/sessionModel.js';
 
-// Fetch user sessions
+// Fetch all user sessions
 export const getSessions = async (req, res) => {
   try {
     const { userId } = req.body; // Ensure userId is provided
@@ -37,7 +37,17 @@ export const getSessionById = async (req, res) => {
 // Add a new session
 export const addSession = async (req, res) => {
   try {
-    const { userId, sessionType, date, location, celestialObjects, notes, status } = req.body;
+    const {
+      userId,
+      sessionType,
+      date,
+      location,
+      celestialObjects,
+      notes,
+      status,
+      tripChecklist,
+      goalsChecklist,
+    } = req.body;
 
     // Validate required fields
     if (!userId || !sessionType || !date || !location || !status) {
@@ -49,9 +59,11 @@ export const addSession = async (req, res) => {
       sessionType,
       date,
       location,
-      celestialObjects,
-      notes,
+      celestialObjects: celestialObjects || [],
+      notes: notes || '',
       status,
+      tripChecklist: tripChecklist || [],
+      goalsChecklist: goalsChecklist || [],
     });
 
     const savedSession = await newSession.save();
@@ -83,7 +95,18 @@ export const updateSession = async (req, res) => {
       return res.status(403).json({ error: 'Unauthorized: You cannot update this session' });
     }
 
-    const updatedSession = await Session.findByIdAndUpdate(id, updateData, { new: true });
+    // Update checklist items individually
+    if (updateData.tripChecklist) {
+      session.tripChecklist = updateData.tripChecklist;
+    }
+    if (updateData.goalsChecklist) {
+      session.goalsChecklist = updateData.goalsChecklist;
+    }
+
+    // Update other fields
+    Object.assign(session, updateData);
+
+    const updatedSession = await session.save();
     res.json(updatedSession);
   } catch (error) {
     console.error('Error updating session:', error.message);
