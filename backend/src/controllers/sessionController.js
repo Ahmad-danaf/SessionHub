@@ -143,3 +143,100 @@ export const deleteSession = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+
+export const updateTripChecklist = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { itemIndex, completed } = req.body;
+
+    const session = await Session.findById(id);
+    if (!session) return res.status(404).json({ error: 'Session not found' });
+
+    if (session.tripChecklist[itemIndex]) {
+      session.tripChecklist[itemIndex].completed = completed;
+      await session.save();
+      res.json(session.tripChecklist);
+    } else {
+      res.status(400).json({ error: 'Checklist item not found' });
+    }
+  } catch (error) {
+    console.error('Error updating checklist:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+export const addGoal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { goal } = req.body;
+
+    if (!goal) return res.status(400).json({ error: 'Goal is required' });
+
+    const session = await Session.findById(id);
+    if (!session) return res.status(404).json({ error: 'Session not found' });
+
+    session.goalsChecklist.push({ goal, achieved: false });
+    await session.save();
+
+    res.json(session.goalsChecklist);
+  } catch (error) {
+    console.error('Error adding goal:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+export const getChecklists = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const session = await Session.findById(id);
+    if (!session) return res.status(404).json({ error: 'Session not found' });
+
+    res.json({
+      tripChecklist: session.tripChecklist,
+      goalsChecklist: session.goalsChecklist,
+    });
+  } catch (error) {
+    console.error('Error fetching checklists:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+  
+export const markAllAsCompleted = async (req, res) => {
+  try {
+    const { id } = req.params; // Extract session ID
+    const { type } = req.body; // Specify which checklist to update: 'trip' or 'goals'
+
+    // Validate inputs
+    if (!type || !['trip', 'goals'].includes(type)) {
+      return res.status(400).json({ error: 'Invalid type. Must be "trip" or "goals".' });
+    }
+
+    const session = await Session.findById(id);
+    if (!session) {
+      return res.status(404).json({ error: 'Session not found' });
+    }
+
+    // Update the appropriate checklist
+    if (type === 'trip') {
+      session.tripChecklist = session.tripChecklist.map(item => ({
+        ...item,
+        completed: true,
+      }));
+    } else if (type === 'goals') {
+      session.goalsChecklist = session.goalsChecklist.map(goal => ({
+        ...goal,
+        achieved: true,
+      }));
+    }
+
+    const updatedSession = await session.save();
+    res.json(updatedSession);
+  } catch (error) {
+    console.error('Error marking all as completed:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
